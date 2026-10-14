@@ -1,0 +1,15 @@
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\bin\Debug\net10.0\UTB.Aukce.Application.deps.json
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\bin\Debug\net10.0\UTB.Aukce.Application.dll
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\bin\Debug\net10.0\UTB.Aukce.Application.pdb
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\bin\Debug\net10.0\UTB.Aukce.Domain.dll
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\bin\Debug\net10.0\UTB.Aukce.Domain.pdb
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.csproj.AssemblyReference.cache
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.AssemblyInfoInputs.cache
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.AssemblyInfo.cs
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.csproj.CoreCompileInputs.cache
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukc.306E2E31.Up2Date
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.dll
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\refint\UTB.Aukce.Application.dll
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\UTB.Aukce.Application.pdb
+C:\Users\simon\Desktop\UTB.Aukce\UTB.Aukce\UTB.Aukce.Application\obj\Debug\net10.0\ref\UTB.Aukce.Application.dll

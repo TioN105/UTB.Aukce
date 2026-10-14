@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="UTB.Aukce.Application/UTB.Aukce.Application.csproj" />
+  <Project Path="UTB.Aukce.Domain/UTB.Aukce.Domain.csproj" />
+  <Project Path="UTB.Aukce.Infrastructure/UTB.Aukce.Infrastructure.csproj" />
+  <Project Path="UTB.Aukce.Presentation/UTB.Aukce.Presentation.csproj" />
+</Solution>
