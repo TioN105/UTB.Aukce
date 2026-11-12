@@ -12,7 +12,8 @@ namespace UTB.Aukce.Domain.Entities
 
         public int AuctionId { get; set; }
         public Auction Auction { get; set; } = null!;
+        public string UserId { get; set; } = string.Empty;
+        public ApplicationUser User { get; set; } = null!;
 
-        // Po přidání Identnity, přidáme userid
     }
 }

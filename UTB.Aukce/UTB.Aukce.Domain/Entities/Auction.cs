@@ -19,5 +19,7 @@ namespace UTB.Aukce.Domain.Entities
 
         public ICollection<Bid> Bids { get; set; } = new List<Bid>();
         public ICollection<UserReview> Reviews { get; set; } = new List<UserReview>();
+        public string SellerId { get; set; } = string.Empty;
+        public ApplicationUser Seller { get; set; } = null!;
     }
 }

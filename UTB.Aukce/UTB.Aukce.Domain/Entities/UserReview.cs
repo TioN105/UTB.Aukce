@@ -13,5 +13,10 @@ namespace UTB.Aukce.Domain.Entities
 
         public int AuctionId { get; set; }
         public Auction Auction { get; set; } = null!;
+        public string ReviewerId { get; set; } = string.Empty;
+        public ApplicationUser Reviewer { get; set; } = null!;
+
+        public string RevieweeId { get; set; } = string.Empty;
+        public ApplicationUser Reviewee { get; set; } = null!;
     }
 }

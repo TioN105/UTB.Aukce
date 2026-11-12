@@ -1,0 +1,33 @@
+﻿@model UTB.Aukce.Application.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Přihlášení";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <h2>Přihlášení</h2>
+        <hr />
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Heslo</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Zapamatovat si mě</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Přihlásit se</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

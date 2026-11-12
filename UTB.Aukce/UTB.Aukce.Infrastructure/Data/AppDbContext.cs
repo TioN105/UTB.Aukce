@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UTB.Aukce.Domain.Entities;
 
 namespace UTB.Aukce.Infrastructure.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        // Tabulky v databázi
         public DbSet<Category> Categories { get; set; }
         public DbSet<Auction> Auctions { get; set; }
         public DbSet<Bid> Bids { get; set; }
@@ -21,9 +18,9 @@ namespace UTB.Aukce.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // Toto je u IdentityDbContext velmi důležité nechat!
 
-            // Nastavení Cascade Delete (když se smaže aukce, smažou se s ní i příhozy a recenze)
+            // --- Původní vazby ---
             modelBuilder.Entity<Bid>()
                 .HasOne(b => b.Auction)
                 .WithMany(a => a.Bids)
@@ -38,9 +35,40 @@ namespace UTB.Aukce.Infrastructure.Data
 
             modelBuilder.Entity<WatchlistItem>()
                 .HasOne(w => w.Auction)
-                .WithMany() // WatchlistItem nemá kolekci uvnitř Auction
+                .WithMany()
                 .HasForeignKey(w => w.AuctionId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // --- NOVÉ VAZBY NA UŽIVATELE (Restrict proti chybě SQL Serveru) ---
+            modelBuilder.Entity<Auction>()
+                .HasOne(a => a.Seller)
+                .WithMany(u => u.Auctions)
+                .HasForeignKey(a => a.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Bid>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Bids)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<WatchlistItem>()
+                .HasOne(w => w.User)
+                .WithMany(u => u.WatchlistItems)
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(r => r.Reviewer)
+                .WithMany()
+                .HasForeignKey(r => r.ReviewerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(r => r.Reviewee)
+                .WithMany()
+                .HasForeignKey(r => r.RevieweeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
