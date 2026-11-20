@@ -1,0 +1,56 @@
+﻿@model UTB.Aukce.Application.ViewModels.AuctionCreateViewModel
+@{
+    ViewData["Title"] = "Vytvořit novou aukci";
+}
+
+<div class="row justify-content-center mt-3">
+    <div class="col-md-7">
+        <h2>Vytvořit novou aukci</h2>
+        <hr />
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Název předmětu</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label">Kategorie</label>
+                <select asp-for="CategoryId" class="form-select"
+                        asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                    <option value="">-- Vyberte kategorii --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Podrobný popis</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="StartingPrice" class="form-label">Vyvolávací cena (Kč)</label>
+                    <input asp-for="StartingPrice" type="number" step="1" class="form-control" />
+                    <span asp-validation-for="StartingPrice" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EndTime" class="form-label">Konec aukce</label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control"
+                           value="@Model.EndTime.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Vystavit aukci</button>
+            <a asp-action="Index" class="btn btn-secondary">Zpět</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Administrace";
+}
+
+<h2 class="mt-3">Administrace portálu UTB.Aukce</h2>
+<p class="text-muted">Správa provozních dat a systému.</p>
+<hr />
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Kategorie</h5>
+                <p class="card-text">Vytváření, úprava a mazání kategorií aukcí.</p>
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-primary">Spravovat kategorie</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Aukce, příhozy a recenze</h5>
+                <p class="card-text">Moderace aktivních dražeb, příhozů a hodnocení.</p>
+                <a asp-area="Admin" asp-controller="Auctions" asp-action="Index" class="btn btn-primary">Spravovat aukce</a>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-4">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Uživatelé a role</h5>
+                    <p class="card-text">Správa uživatelských účtů a přidělování rolí (pouze Admin).</p>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-warning">Spravovat uživatele</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

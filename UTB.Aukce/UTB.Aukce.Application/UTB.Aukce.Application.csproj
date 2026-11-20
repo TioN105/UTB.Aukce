@@ -10,8 +10,4 @@
     <ProjectReference Include="..\UTB.Aukce.Domain\UTB.Aukce.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

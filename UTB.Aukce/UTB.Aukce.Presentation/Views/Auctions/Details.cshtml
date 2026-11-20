@@ -1,0 +1,169 @@
+﻿@using System.Security.Claims
+@model UTB.Aukce.Application.ViewModels.AuctionDetailViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3">← Zpět do katalogu</a>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="badge bg-primary">@Model.CategoryName</span>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-action="ToggleWatchlist" method="post" class="d-inline">
+                            <input type="hidden" name="auctionId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-sm @(Model.IsWatched ? "btn-warning" : "btn-outline-secondary")">
+                                @(Model.IsWatched ? "★ Odebrat ze sledovaných" : "☆ Přidat do sledovaných")
+                            </button>
+                        </form>
+                    }
+                </div>
+                <div class="card-body">
+                    <h2>@Model.Title</h2>
+                    <p class="text-muted">Prodejce: <strong>@Model.SellerName</strong> | Vystaveno: @Model.StartTime.ToString("dd. MM. yyyy HH:mm")</p>
+                    <hr />
+                    <p style="white-space: pre-line;">@Model.Description</p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header fw-bold">Hodnocení prodejce k této aukci (@Model.Reviews.Count)</div>
+                <div class="card-body">
+                    @if (Model.CanReview)
+                    {
+                        <form asp-action="AddReview" method="post" class="mb-4 p-3 bg-light rounded">
+                            <input type="hidden" name="auctionId" value="@Model.Id" />
+                            <h6>Přidat hodnocení prodejce</h6>
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <select name="rating" class="form-select">
+                                        <option value="5">★★★★★ (5)</option>
+                                        <option value="4">★★★★☆ (4)</option>
+                                        <option value="3">★★★☆☆ (3)</option>
+                                        <option value="2">★★☆☆☆ (2)</option>
+                                        <option value="1">★☆☆☆☆ (1)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" name="comment" class="form-control" placeholder="Napište komentář..." required />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Odeslat</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+
+                    @if (!Model.Reviews.Any())
+                    {
+                        <p class="text-muted mb-0">Zatím žádné hodnocení.</p>
+                    }
+                    else
+                    {
+                        @foreach (var rev in Model.Reviews)
+                        {
+                            <div class="border-bottom pb-2 mb-2">
+                                <strong>@rev.ReviewerName</strong>
+                                <span class="text-warning ms-2">@(new string('★', rev.Rating))@(new string('☆', 5 - rev.Rating))</span>
+                                <small class="text-muted float-end">@rev.CreatedAt.ToString("dd. MM. yyyy HH:mm")</small>
+                                <div>@rev.Comment</div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white fw-bold">Stav dražby</div>
+                <div class="card-body">
+                    <div class="text-muted small">Vyvolávací cena: @Model.StartingPrice.ToString("N0") Kč</div>
+                    <div class="display-6 fw-bold text-success my-2">@Model.CurrentPrice.ToString("N0") Kč</div>
+                    <div class="mb-3">
+                        <strong>Konec aukce:</strong> @Model.EndTime.ToString("dd. MM. yyyy HH:mm")
+                        @if (!Model.IsActive)
+                        {
+                            <span class="badge bg-danger ms-1">Aukce skončila</span>
+                        }
+                    </div>
+
+                    @if (Model.IsActive)
+                    {
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            if (currentUserId == Model.SellerId)
+                            {
+                                <div class="alert alert-warning mb-0">Jste autorem této aukce, nemůžete přihazovat.</div>
+                            }
+                            else
+                            {
+                                <form asp-action="PlaceBid" method="post">
+                                    <input type="hidden" name="auctionId" value="@Model.Id" />
+                                    <label class="form-label">Váš příhoz (minimálně @Model.MinNextBid.ToString("N0") Kč):</label>
+                                    <div class="input-group">
+                                        <input type="number" name="amount" class="form-control" min="@Model.MinNextBid" value="@Model.MinNextBid" step="1" required />
+                                        <span class="input-group-text">Kč</span>
+                                        <button type="submit" class="btn btn-success">Přihodit</button>
+                                    </div>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-0">
+                                Pro přihazování se prosím <a asp-controller="Account" asp-action="Login">přihlaste</a>.
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header fw-bold">Historie příhozů (@Model.Bids.Count)</div>
+                <div class="card-body p-0">
+                    @if (!Model.Bids.Any())
+                    {
+                        <p class="text-muted p-3 mb-0">Zatím nikdo nepřihodil. Buďte první!</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Dražitel</th>
+                                    <th>Částka</th>
+                                    <th>Čas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bid in Model.Bids)
+                                {
+                                    <tr>
+                                        <td>@bid.BidderName</td>
+                                        <td class="fw-bold">@bid.Amount.ToString("N0") Kč</td>
+                                        <td class="small text-muted">@bid.CreatedAt.ToString("dd. MM. HH:mm:ss")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+﻿@model AdminModerationViewModel
+@{
+    ViewData["Title"] = "Správa aukcí, příhozů a recenzí";
+}
+
+<div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+    <h2>Moderace aukcí, příhozů a recenzí</h2>
+    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">Zpět do administrace</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<ul class="nav nav-tabs mb-3" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="auctions-tab" data-bs-toggle="tab" data-bs-target="#auctions" type="button" role="tab">
+            Aukce (@Model.Auctions.Count())
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="bids-tab" data-bs-toggle="tab" data-bs-target="#bids" type="button" role="tab">
+            Příhozy (@Model.Bids.Count())
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+            Recenze (@Model.Reviews.Count())
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="watchlist-tab" data-bs-toggle="tab" data-bs-target="#watchlist" type="button" role="tab">
+            Sledované položky (@Model.WatchlistItems.Count())
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminTabsContent">
+    <!-- ZÁLOŽKA 1: AUKCE -->
+    <div class="tab-pane fade show active" id="auctions" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Název</th>
+                        <th>Kategorie</th>
+                        <th>Prodejce</th>
+                        <th>Aktuální cena</th>
+                        <th>Konec</th>
+                        <th style="width: 190px;">Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Auctions)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>
+                                <a asp-area="" asp-controller="Auctions" asp-action="Details" asp-route-id="@item.Id" target="_blank">
+                                    <strong>@item.Title</strong>
+                                </a>
+                            </td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.SellerName</td>
+                            <td>@item.CurrentPrice.ToString("N0") Kč</td>
+                            <td>@item.EndTime.ToString("dd. MM. yyyy HH:mm")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Upravit</a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Opravdu chcete smazat tuto aukci včetně všech příhozů a recenzí?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ZÁLOŽKA 2: PŘÍHOZY -->
+    <div class="tab-pane fade" id="bids" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Aukce</th>
+                        <th>Dražitel</th>
+                        <th>Částka</th>
+                        <th>Čas příhozu</th>
+                        <th style="width: 110px;">Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var bid in Model.Bids)
+                    {
+                        <tr>
+                            <td>@bid.Id</td>
+                            <td>@bid.AuctionTitle</td>
+                            <td>@bid.BidderName</td>
+                            <td class="fw-bold">@bid.Amount.ToString("N0") Kč</td>
+                            <td>@bid.CreatedAt.ToString("dd. MM. yyyy HH:mm:ss")</td>
+                            <td>
+                                <form asp-action="DeleteBid" asp-route-id="@bid.Id" method="post"
+                                      onsubmit="return confirm('Opravdu chcete smazat tento příhoz?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ZÁLOŽKA 3: RECENZE -->
+    <div class="tab-pane fade" id="reviews" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Aukce</th>
+                        <th>Hodnotitel</th>
+                        <th>Hodnocený</th>
+                        <th>Hodnocení</th>
+                        <th>Komentář</th>
+                        <th style="width: 110px;">Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rev in Model.Reviews)
+                    {
+                        <tr>
+                            <td>@rev.Id</td>
+                            <td>@rev.AuctionTitle</td>
+                            <td>@rev.ReviewerName</td>
+                            <td>@rev.RevieweeName</td>
+                            <td class="text-warning">@(new string('★', rev.Rating))</td>
+                            <td>@rev.Comment</td>
+                            <td>
+                                <form asp-action="DeleteReview" asp-route-id="@rev.Id" method="post"
+                                      onsubmit="return confirm('Opravdu chcete smazat tuto recenzi?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- ZÁLOŽKA 4: SLEDOVANÉ POLOŽKY -->
+    <div class="tab-pane fade" id="watchlist" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Aukce</th>
+                        <th>Uživatel</th>
+                        <th>Přidáno</th>
+                        <th style="width: 110px;">Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var w in Model.WatchlistItems)
+                    {
+                        <tr>
+                            <td>@w.Id</td>
+                            <td>@w.AuctionTitle</td>
+                            <td>@w.UserName</td>
+                            <td>@w.AddedAt.ToString("dd. MM. yyyy HH:mm")</td>
+                            <td>
+                                <form asp-action="DeleteWatchlistItem" asp-route-id="@w.Id" method="post"
+                                      onsubmit="return confirm('Opravdu chcete odstranit tuto sledovanou položku?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Smazat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

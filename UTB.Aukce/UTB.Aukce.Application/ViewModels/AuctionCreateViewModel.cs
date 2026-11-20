@@ -22,5 +22,7 @@ namespace UTB.Aukce.Application.ViewModels
 
         [Required(ErrorMessage = "Vyberte kategorii.")]
         public int CategoryId { get; set; }
+
+        public IEnumerable<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
     }
 }

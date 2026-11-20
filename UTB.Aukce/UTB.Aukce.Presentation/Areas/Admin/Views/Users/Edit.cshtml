@@ -1,0 +1,49 @@
+﻿@model UserEditViewModel
+@{
+    ViewData["Title"] = "Upravit uživatele";
+}
+
+<div class="row justify-content-center mt-3">
+    <div class="col-md-6">
+        <h2>Upravit uživatele</h2>
+        <p class="text-muted small">Z bezpečnostních důvodů nelze zobrazovat ani měnit heslo (hash) uživatele.</p>
+        <hr />
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label">Křestní jméno</label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label">Příjmení</label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SelectedRole" class="form-label">Role</label>
+                <select asp-for="SelectedRole" class="form-select"
+                        asp-items="@(new SelectList(Model.AvailableRoles))">
+                </select>
+                <span asp-validation-for="SelectedRole" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Uložit změny</button>
+            <a asp-action="Index" class="btn btn-secondary">Zpět</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

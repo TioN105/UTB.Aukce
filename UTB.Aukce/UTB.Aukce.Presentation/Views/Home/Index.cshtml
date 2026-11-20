@@ -1,8 +1,74 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model UTB.Aukce.Application.ViewModels.AuctionCatalogViewModel
+@{
+    ViewData["Title"] = "Úvod";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="p-4 p-md-5 mb-4 rounded bg-dark text-white mt-3">
+    <div class="col-lg-8">
+        <h1 class="display-5 fw-bold">Aukční portál UTB.Aukce</h1>
+        <p class="lead my-3">
+            Nakupujte a prodávejte v online aukcích. Přihazujte v reálném čase, sledujte vybrané položky a hodnoťte ostatní uživatele.
+        </p>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-controller="Auctions" asp-action="Index" class="btn btn-primary btn-lg">Procházet katalog aukcí</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Auctions" asp-action="Create" class="btn btn-outline-light btn-lg">+ Vystavit novou aukci</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg">Zaregistrovat se</a>
+            }
+        </div>
+    </div>
 </div>
+
+<h4 class="mb-3">Kategorie aukcí</h4>
+<div class="d-flex flex-wrap gap-2 mb-4">
+    @foreach (var cat in Model.Categories)
+    {
+        <a asp-controller="Auctions" asp-action="Index" asp-route-categoryId="@cat.Id"
+           class="btn btn-outline-primary">
+            @cat.Name
+        </a>
+    }
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Brzy končící aktivní aukce</h4>
+    <a asp-controller="Auctions" asp-action="Index" class="btn btn-sm btn-link">Zobrazit všechny →</a>
+</div>
+
+@if (!Model.Auctions.Any())
+{
+    <div class="alert alert-info">Momentálně nejsou vystaveny žádné aktivní aukce.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var item in Model.Auctions.Take(3))
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">@item.CategoryName</span>
+                        <span class="badge bg-success">Aktivní</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text text-muted small flex-grow-1">
+                            @(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                        </p>
+                        <div class="fs-5 fw-bold text-success mt-2">@item.CurrentPrice.ToString("N0") Kč</div>
+                        <div class="small text-muted">Konec: @item.EndTime.ToString("dd. MM. yyyy HH:mm")</div>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="Auctions" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary w-100">
+                            Zobrazit detail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

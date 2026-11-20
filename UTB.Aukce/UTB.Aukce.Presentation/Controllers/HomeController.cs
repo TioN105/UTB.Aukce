@@ -1,14 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using UTB.Aukce.Application.Services;
 using UTB.Aukce.Presentation.Models;
 
 namespace UTB.Aukce.Presentation.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IAuctionService _auctionService;
+
+        public HomeController(IAuctionService auctionService)
         {
-            return View();
+            _auctionService = auctionService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var catalog = await _auctionService.GetCatalogAsync(null, null, onlyActive: true, userId);
+            return View(catalog);
         }
 
         public IActionResult Privacy()

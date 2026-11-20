@@ -1,0 +1,87 @@
+﻿@model UTB.Aukce.Application.ViewModels.MyActivityViewModel
+@{
+    ViewData["Title"] = "Moje aukce a sledované";
+}
+
+<h2 class="mt-3">Moje aktivita</h2>
+<hr />
+
+<h4 class="mt-4">Moje vystavené aukce (@Model.MyCreatedAuctions.Count())</h4>
+@if (!Model.MyCreatedAuctions.Any())
+{
+    <p class="text-muted">Zatím jste nevystavil(a) žádnou aukci.</p>
+}
+else
+{
+    <table class="table table-bordered table-sm">
+        <thead><tr><th>Název</th><th>Kategorie</th><th>Aktuální cena</th><th>Příhozy</th><th>Konec</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var a in Model.MyCreatedAuctions)
+            {
+                <tr>
+                    <td>@a.Title</td>
+                    <td>@a.CategoryName</td>
+                    <td>@a.CurrentPrice.ToString("N0") Kč</td>
+                    <td>@a.BidCount</td>
+                    <td>@a.EndTime.ToString("dd. MM. yyyy HH:mm")</td>
+                    <td><a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-primary">Detail</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h4 class="mt-4">Aukce, kde přihazuji (@Model.MyBiddedAuctions.Count())</h4>
+@if (!Model.MyBiddedAuctions.Any())
+{
+    <p class="text-muted">Zatím jste nepřihodil(a) v žádné aukci.</p>
+}
+else
+{
+    <table class="table table-bordered table-sm">
+        <thead><tr><th>Název</th><th>Aktuální cena</th><th>Stav</th><th>Konec</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var a in Model.MyBiddedAuctions)
+            {
+                <tr>
+                    <td>@a.Title</td>
+                    <td>@a.CurrentPrice.ToString("N0") Kč</td>
+                    <td>@(a.IsActive ? "Aktivní" : "Ukončeno")</td>
+                    <td>@a.EndTime.ToString("dd. MM. yyyy HH:mm")</td>
+                    <td><a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-primary">Detail</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h4 class="mt-4">Sledované položky – Watchlist (@Model.WatchlistAuctions.Count())</h4>
+@if (!Model.WatchlistAuctions.Any())
+{
+    <p class="text-muted">Nemáte žádné sledované aukce.</p>
+}
+else
+{
+    <table class="table table-bordered table-sm">
+        <thead><tr><th>Název</th><th>Kategorie</th><th>Aktuální cena</th><th>Konec</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var a in Model.WatchlistAuctions)
+            {
+                <tr>
+                    <td>@a.Title</td>
+                    <td>@a.CategoryName</td>
+                    <td>@a.CurrentPrice.ToString("N0") Kč</td>
+                    <td>@a.EndTime.ToString("dd. MM. yyyy HH:mm")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-primary">Detail</a>
+                        <form asp-action="ToggleWatchlist" method="post" class="d-inline">
+                            <input type="hidden" name="auctionId" value="@a.Id" />
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Odebrat</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
